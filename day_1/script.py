@@ -3,21 +3,39 @@ from dataclasses import dataclass
 from time import perf_counter as timer
 
 @dataclass
-class DataNode:
-    ...
+class ElfCalories:
+    carrying:list[int] = None
+    total:int = 0
+
+    def __init__(self,values:list[int]):
+        self.carrying = values
+        self.total = sum(values)
+    
+    def __add__(self,other):
+        if isinstance(other,int):
+            return other + self.total
 
 my_dir:pl.Path = pl.Path(__file__).parent
-parsed_data:list[DataNode] = list()
+parsed_data:list[ElfCalories] = list()
 with open(my_dir / "input.txt") as input_file:
+    buffer:list[int] = []
     for line in input_file:
-        #parse line, add to parsed_data
-        ...
+        line = line.strip()
+        if line != "":
+            number:int = int(line)
+            buffer.append(number)
+        else:
+            elf:ElfCalories = ElfCalories(buffer)
+            parsed_data.append(elf)
+            buffer.clear()
 
-def star_one(data:list[DataNode]) -> tuple[str,list[DataNode]]:
-    pass
+def star_one(data:list[ElfCalories]) -> tuple[str,list[ElfCalories]]:
+    max_elf:ElfCalories = max(data,key=lambda elf:elf.total)
+    return (str(max_elf.total),data)
 
-def star_two(data:list[DataNode]) -> str:
-    pass
+def star_two(data:list[ElfCalories]) -> str:
+    data.sort(key=lambda elf:elf.total,reverse=True)
+    return str(sum(elf.total for elf in data[0:3]))
 
 s1_start:float = timer()
 first_star,round_two_data = star_one(parsed_data)
