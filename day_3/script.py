@@ -37,10 +37,6 @@ def priority(item: str) -> int:
     return result
 
 
-def grouper(iterable, count=3):
-    iterators = [iter(iterable)] * count
-    return zip(*iterators)
-
 def grouper(iterable, count = 3):
     iterators = [iter(iterable)] * count
     return zip(*iterators)
@@ -54,15 +50,10 @@ with open(my_dir / "input.txt") as input_file:
 def star_one(data: list[Backpack]) -> str:
     return str(sum(priority(datum.shared_item) for datum in data))
 
-def star_one(data: list[Backpack]) -> str:
-    return str(sum(priority(datum.shared_item) for datum in data))
-
-
 def star_two(data: list[Backpack]) -> str:
     running_total = 0
     for left, middle, right in grouper(data):
         shared = left.item_set() & middle.item_set() & right.item_set()
-        print(shared)
         shared = shared.pop()
         running_total += priority(shared)
     return str(running_total)
