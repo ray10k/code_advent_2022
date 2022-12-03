@@ -41,6 +41,9 @@ def grouper(iterable, count=3):
     iterators = [iter(iterable)] * count
     return zip(*iterators)
 
+def grouper(iterable, count = 3):
+    iterators = [iter(iterable)] * count
+    return zip(*iterators)
 
 my_dir: pl.Path = pl.Path(__file__).parent
 parsed_data: list[Backpack] = list()
@@ -48,6 +51,8 @@ with open(my_dir / "input.txt") as input_file:
     for line in input_file:
         parsed_data.append(Backpack(line.strip()))
 
+def star_one(data: list[Backpack]) -> str:
+    return str(sum(priority(datum.shared_item) for datum in data))
 
 def star_one(data: list[Backpack]) -> str:
     return str(sum(priority(datum.shared_item) for datum in data))
