@@ -53,8 +53,8 @@ class SimulatedCPU:
         if self.cycles_executed % 40 in range(
             self.register_value - 1, self.register_value + 2
         ):
-            return "#"
-        return "."
+            return "█"
+        return " "
 
 
 def grouper(iterable, length):
