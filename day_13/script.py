@@ -6,7 +6,8 @@ import re
 
 TOKEN_PATTERN = re.compile(r"(\[|\]|\d+)")
 
-def listify(to_parse:str) -> list:
+
+def listify(to_parse: str) -> list:
     retval = []
     stack = [retval]
     tokens = TOKEN_PATTERN.findall(to_parse)
@@ -21,8 +22,9 @@ def listify(to_parse:str) -> list:
             stack[-1].append(int(token))
     return retval[0]
 
-def check_order(left:str,right:str) -> bool:
-    #print(f"{left} check against {right}")
+
+def check_order(left: str, right: str) -> bool:
+    # print(f"{left} check against {right}")
     l_struct = listify(left)
     r_struct = listify(right)
     l_stack = []
@@ -30,7 +32,7 @@ def check_order(left:str,right:str) -> bool:
     while True:
         if is_stack(l_struct) and is_stack(r_struct):
             if len(l_struct) == 0 and len(r_struct) == 0:
-                #print('Dropping one stack-level')
+                # print('Dropping one stack-level')
                 l_struct = l_stack.pop()
                 r_struct = r_stack.pop()
                 continue
@@ -38,41 +40,44 @@ def check_order(left:str,right:str) -> bool:
                 return len(l_struct) == 0
 
         if is_stack(l_struct[0]) and is_stack(r_struct[0]):
-            #print('Rising one stack-level.')
+            # print('Rising one stack-level.')
             l_stack.append(l_struct)
             r_stack.append(r_struct)
             l_struct = l_struct.pop(0)
             r_struct = r_struct.pop(0)
             continue
-        
+
         if is_number(l_struct[0]) and is_number(r_struct[0]):
-            #print(f"Number comparison {l_struct[0]} vs {r_struct[0]}")
+            # print(f"Number comparison {l_struct[0]} vs {r_struct[0]}")
             if l_struct[0] == r_struct[0]:
                 l_struct.pop(0)
                 r_struct.pop(0)
                 continue
             return l_struct[0] < r_struct[0]
-        
+
         if is_number(l_struct[0]):
-            #print(f"Stacking {l_struct[0]} left.")
+            # print(f"Stacking {l_struct[0]} left.")
             l_struct[0] = [l_struct[0]]
             continue
         elif is_number(r_struct[0]):
-            #print(f"Stacking {r_struct[0]} right.")
+            # print(f"Stacking {r_struct[0]} right.")
             r_struct[0] = [r_struct[0]]
             continue
-        #print("One stack exhausted.")
+        # print("One stack exhausted.")
         return len(l_struct) < len(r_struct)
 
-def is_stack(item:list|int) -> bool:
-    return isinstance(item,list)
 
-def is_number(item:list|int) -> bool:
-    return isinstance(item,int)
+def is_stack(item: list | int) -> bool:
+    return isinstance(item, list)
 
-def grouper(iterable,count:int):
-    iterators = [iter(iterable)]*count
-    return zip_longest(*iterators,fillvalue="")
+
+def is_number(item: list | int) -> bool:
+    return isinstance(item, int)
+
+
+def grouper(iterable, count: int):
+    iterators = [iter(iterable)] * count
+    return zip_longest(*iterators, fillvalue="")
 
 
 my_dir: pl.Path = pl.Path(__file__).parent
@@ -82,27 +87,29 @@ with open(my_dir / "input.txt") as input_file:
 
 
 def star_one(data: list[str]) -> str:
-    #6640 too high
-    valids:list[int] = []
-    for index,(left,right,_) in enumerate(grouper(data,3),start = 1):
-        if check_order(left,right):
+    # 6640 too high
+    valids: list[int] = []
+    for index, (left, right, _) in enumerate(grouper(data, 3), start=1):
+        if check_order(left, right):
             valids.append(index)
     return str(sum(valids))
 
 
 def star_two(data: list[str]) -> str:
-    #23086 too high
-    def comparison(left,right) -> int:
-        if check_order(left,right):
+    # 23086 too high
+    def comparison(left, right) -> int:
+        if check_order(left, right):
             return -1
         return 1
+
     clean_data = [line for line in data if line != ""]
     clean_data.append("[[2]]")
     clean_data.append("[[6]]")
     clean_data.sort(key=cmp_to_key(comparison))
-    index_a = clean_data.index("[[2]]")+1
-    index_b = clean_data.index("[[6]]")+1
-    return str(index_a*index_b)
+    index_a = clean_data.index("[[2]]") + 1
+    index_b = clean_data.index("[[6]]") + 1
+    return str(index_a * index_b)
+
 
 s1_start: float = timer()
 first_star = star_one(parsed_data)
