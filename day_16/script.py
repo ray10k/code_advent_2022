@@ -72,7 +72,7 @@ def star_one(data: list[Valve]) -> str:
     valve_names:dict[str,Valve] = {vl.name:vl for vl in data}
     
     paths_found:set[int] = set()
-    to_check:deque[NavStep] = deque([NavStep(current_node=data[0].name,to_visit=good_valves)])
+    to_check:deque[NavStep] = deque([NavStep(current_node=valve_names["AA"].name,to_visit=good_valves)])
     current:NavStep = None
 
     
@@ -100,7 +100,6 @@ def star_one(data: list[Valve]) -> str:
                     recon_path.extend('..' for _ in range(31-len(recon_path)))
                 ps = score_path(recon_path,valve_names)
                 paths_found.add(ps)
-                print('.',end='')
                 continue
             to_check.append(NavStep(time,end,remaining_valves,full_path))
     #print(f"Cache: {' '.join(f'{s}->{e}:{len(path)} 'for (s,e),path in path_cache.items())}")
